@@ -1,5 +1,7 @@
 "use client"
 
+import React from "react"
+
 interface Issue {
   id: string
   title: string
@@ -12,6 +14,11 @@ interface KanbanColumnProps {
   status: string
   issues: Issue[]
   color: string
+  isDragOver?: boolean
+  onDragStart?: (e: React.DragEvent, issueId: string, currentStatus: string) => void
+  onDragOver?: (e: React.DragEvent, status: string) => void
+  onDragLeave?: () => void
+  onDrop?: (e: React.DragEvent, status: string) => void
 }
 
 export function KanbanColumn({
@@ -19,9 +26,21 @@ export function KanbanColumn({
   status,
   issues,
   color,
+  isDragOver,
+  onDragStart,
+  onDragOver,
+  onDragLeave,
+  onDrop,
 }: KanbanColumnProps) {
   return (
-    <div className="flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30">
+    <div
+      className={`flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30 transition-colors ${
+        isDragOver ? "border-primary bg-primary/5" : ""
+      }`}
+      onDragOver={(e) => onDragOver?.(e, status)}
+      onDragLeave={onDragLeave}
+      onDrop={(e) => onDrop?.(e, status)}
+    >
       <div className="flex items-center gap-2 border-b px-3 py-2.5">
         <div className={`size-2 rounded-full ${color}`} />
         <span className="text-sm font-medium">{title}</span>
@@ -30,9 +49,14 @@ export function KanbanColumn({
         </span>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-2">
+      <div className="flex-1 space-y-2 overflow-y-auto p-2 min-h-[120px]">
         {issues.map((issue) => (
-          <KanbanCard key={issue.id} issue={issue} />
+          <KanbanCard
+            key={issue.id}
+            issue={issue}
+            status={status}
+            onDragStart={onDragStart}
+          />
         ))}
         {issues.length === 0 && (
           <p className="py-6 text-center text-xs text-muted-foreground">
@@ -44,7 +68,15 @@ export function KanbanColumn({
   )
 }
 
-function KanbanCard({ issue }: { issue: Issue }) {
+function KanbanCard({
+  issue,
+  status,
+  onDragStart,
+}: {
+  issue: Issue
+  status: string
+  onDragStart?: (e: React.DragEvent, issueId: string, currentStatus: string) => void
+}) {
   const priorityColor: Record<string, string> = {
     urgent: "border-l-red-500",
     high: "border-l-amber-500",
@@ -54,7 +86,9 @@ function KanbanCard({ issue }: { issue: Issue }) {
 
   return (
     <div
-      className={`rounded-lg border border-l-2 bg-background p-3 shadow-sm transition-shadow hover:shadow-md ${
+      draggable
+      onDragStart={(e) => onDragStart?.(e, issue.id, status)}
+      className={`cursor-grab rounded-lg border border-l-2 bg-background p-3 shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing ${
         priorityColor[issue.priority] ?? "border-l-gray-400"
       }`}
     >

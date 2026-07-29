@@ -1,6 +1,10 @@
 "use client"
 
+import { useState, useEffect, useCallback } from "react"
 import { KanbanColumn } from "./kanban-column"
+import { useCollaboration } from "@/hooks/use-collaboration"
+import { useUpdateIssue } from "@/hooks/queries/use-issues"
+import { useSession } from "@/hooks/use-session"
 
 interface Issue {
   id: string
@@ -12,6 +16,7 @@ interface Issue {
 
 interface KanbanBoardProps {
   issues: Issue[]
+  projectId?: string
 }
 
 const COLUMNS = [
@@ -23,7 +28,97 @@ const COLUMNS = [
   { title: "Cancelled", status: "cancelled", color: "bg-red-500" },
 ]
 
-export function KanbanBoard({ issues }: KanbanBoardProps) {
+export function KanbanBoard({ issues: initialIssues, projectId }: KanbanBoardProps) {
+  const [issues, setIssues] = useState<Issue[]>(initialIssues)
+  const [dragOverStatus, setDragOverStatus] = useState<string | null>(null)
+  const { data: session } = useSession()
+  const updateIssue = useUpdateIssue()
+  const userId = session?.user?.id
+  const collab = useCollaboration(userId)
+
+  // Sync with server-side prop changes
+  useEffect(() => {
+    setIssues(initialIssues)
+  }, [initialIssues])
+
+  // Join project room for real-time updates
+  useEffect(() => {
+    if (!projectId || !collab) return
+
+    collab.kanban.joinProjectBoard(projectId)
+
+    const unsub = collab.kanban.onKanbanMove((move) => {
+      if (move.userId === userId) return
+      setIssues((prev) =>
+        prev.map((i) =>
+          i.id === move.issueId ? { ...i, status: move.toStatus } : i,
+        ),
+      )
+    })
+
+    return () => {
+      unsub?.()
+      collab.kanban.leaveProjectBoard(projectId)
+    }
+  }, [projectId, collab, userId])
+
+  const handleDragStart = useCallback(
+    (e: React.DragEvent, issueId: string, currentStatus: string) => {
+      e.dataTransfer.setData("text/plain", JSON.stringify({ issueId, currentStatus }))
+      e.dataTransfer.effectAllowed = "move"
+    },
+    [],
+  )
+
+  const handleDragOver = useCallback((e: React.DragEvent, status: string) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "move"
+    setDragOverStatus(status)
+  }, [])
+
+  const handleDragLeave = useCallback(() => {
+    setDragOverStatus(null)
+  }, [])
+
+  const handleDrop = useCallback(
+    async (e: React.DragEvent, toStatus: string) => {
+      e.preventDefault()
+      setDragOverStatus(null)
+
+      try {
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"))
+        const { issueId, currentStatus } = data as { issueId: string; currentStatus: string }
+        if (currentStatus === toStatus) return
+
+        // Optimistic update
+        setIssues((prev) =>
+          prev.map((i) => (i.id === issueId ? { ...i, status: toStatus } : i)),
+        )
+
+        // Broadcast to collaborators
+        if (projectId && userId) {
+          collab?.kanban.broadcastKanbanMove({
+            issueId,
+            projectId,
+            fromStatus: currentStatus,
+            toStatus,
+            newSortOrder: 0,
+            userId,
+          })
+        }
+
+        // Persist
+        await updateIssue.mutateAsync({
+          issueId,
+          data: { status: toStatus },
+        })
+      } catch {
+        // Revert on error is handled by refetch
+      }
+    },
+    [projectId, userId, updateIssue, collab],
+  )
+
   return (
     <div className="flex gap-4 overflow-x-auto pb-4">
       {COLUMNS.map((col) => (
@@ -33,6 +128,11 @@ export function KanbanBoard({ issues }: KanbanBoardProps) {
           status={col.status}
           color={col.color}
           issues={issues.filter((i) => i.status === col.status)}
+          isDragOver={dragOverStatus === col.status}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
         />
       ))}
     </div>

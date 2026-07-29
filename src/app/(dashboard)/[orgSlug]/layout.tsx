@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Navbar } from "@/components/layout/navbar"
+import { PresenceAvatars } from "@/features/collaboration/components/presence-avatars"
 import { MobileNav } from "@/components/layout/mobile-nav"
 
 export default async function OrgLayout({
@@ -37,7 +38,10 @@ export default async function OrgLayout({
       <Sidebar orgSlug={orgSlug} />
       <div className="flex-1 flex flex-col pb-14 md:pb-0">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <div className="flex items-center justify-end gap-2 px-4 py-1 border-b bg-muted/20">
+          <PresenceAvatars userId={session.user.id} orgSlug={orgSlug} orgId={org.id} />
+        </div>
+        <main id="main-content" className="flex-1">{children}</main>
       </div>
       <MobileNav />
     </div>

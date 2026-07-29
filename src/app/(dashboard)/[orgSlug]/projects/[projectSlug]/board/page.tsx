@@ -74,7 +74,7 @@ export default async function BoardPage({
         />
       </div>
 
-      <KanbanBoard issues={issues} />
+      <KanbanBoard issues={issues} projectId={project.id} />
     </div>
   )
 }

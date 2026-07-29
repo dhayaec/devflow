@@ -8,6 +8,7 @@ import { IssueComments } from "@/features/issues/components/issue-comments"
 import { IssueChecklist } from "@/features/issues/components/issue-checklist"
 import { IssueSidebar } from "@/features/issues/components/issue-sidebar"
 import { IssueDetailActions } from "./issue-detail-actions"
+import { IssueRealtimeWrapper } from "@/features/issues/components/issue-realtime-wrapper"
 
 const statusLabels: Record<string, string> = {
   backlog: "Backlog",
@@ -119,6 +120,7 @@ export default async function IssueDetailPage({
         </span>
       </div>
 
+      <IssueRealtimeWrapper issueId={issue.id} projectId={project.id} userId={session.user.id}>
       <div className="flex gap-8">
         {/* Main content */}
         <div className="flex-1 min-w-0 space-y-6">
@@ -203,6 +205,7 @@ export default async function IssueDetailPage({
           currentUserId={session.user.id}
         />
       </div>
+      </IssueRealtimeWrapper>
     </div>
   )
 }
