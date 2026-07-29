@@ -13,6 +13,10 @@
 # testing
 /coverage
 
+# database
+*.db
+*.db-journal
+
 # next.js
 /.next/
 /out/

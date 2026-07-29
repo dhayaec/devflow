@@ -11,18 +11,22 @@
     "test:run": "vitest run",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
     "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.5.7",
+    "@prisma/adapter-better-sqlite3": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@tanstack/react-query": "^5.101.4",
     "@tiptap/react": "^3.29.1",
     "@tiptap/starter-kit": "^3.29.1",
+    "better-sqlite3": "^13.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.4.2",
     "lucide-react": "^1.27.0",
     "next": "16.2.12",
     "next-auth": "5.0.0-beta.32",
@@ -50,6 +54,7 @@
     "prettier": "^3.9.6",
     "shadcn": "^4.16.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.1",
     "typescript": "^5",
     "vitest": "^4.1.10"
   }
