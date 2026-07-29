@@ -23,11 +23,36 @@ import {
   Undo,
   Redo,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface DocumentToolbarProps {
   editor: Editor | null
+}
+
+function ToolButton({
+  active,
+  onClick,
+  children,
+  title,
+}: {
+  active?: boolean
+  onClick: () => void
+  children: React.ReactNode
+  title: string
+}) {
+  return (
+    <button
+      type="button"
+      title={title}
+      onClick={onClick}
+      className={cn(
+        "flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+        active && "bg-accent text-accent-foreground",
+      )}
+    >
+      {children}
+    </button>
+  )
 }
 
 export function DocumentToolbar({ editor }: DocumentToolbarProps) {
@@ -54,30 +79,6 @@ export function DocumentToolbar({ editor }: DocumentToolbarProps) {
       .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
       .run()
   }
-
-  const ToolButton = ({
-    active,
-    onClick,
-    children,
-    title,
-  }: {
-    active?: boolean
-    onClick: () => void
-    children: React.ReactNode
-    title: string
-  }) => (
-    <button
-      type="button"
-      title={title}
-      onClick={onClick}
-      className={cn(
-        "flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-        active && "bg-accent text-accent-foreground",
-      )}
-    >
-      {children}
-    </button>
-  )
 
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b px-3 py-1.5">

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { fileName, mimeType, fileSize, projectId, issueId, commentId } = body
+  const { fileName, mimeType, fileSize, projectId } = body
 
   if (!fileName || !mimeType || !fileSize || !projectId) {
     return NextResponse.json(

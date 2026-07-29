@@ -2,7 +2,6 @@ import "server-only"
 
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
-import type { Membership } from "@prisma/client"
 
 export const getSession = auth
 

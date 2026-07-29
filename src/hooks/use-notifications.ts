@@ -34,8 +34,23 @@ export function useNotifications(userId?: string) {
   }, [])
 
   useEffect(() => {
-    fetchNotifications()
-  }, [fetchNotifications])
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch("/api/notifications?limit=20")
+        if (res.ok && !cancelled) {
+          const data = await res.json()
+          setNotifications(data.notifications)
+          setTotalUnread(data.totalUnread)
+        }
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     if (!userId) return

@@ -77,7 +77,6 @@ export default async function ProjectOverviewPage({
     {} as Record<string, number>,
   )
 
-  const totalIssues = recentIssues.length
   const doneIssues = issueCounts.find((c) => c.status === "done")?._count ?? 0
 
   return (

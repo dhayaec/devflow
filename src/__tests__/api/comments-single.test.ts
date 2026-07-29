@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { PATCH, DELETE } from "@/app/api/comments/[commentId]/route"
 import { mockDb } from "@/__tests__/setup"

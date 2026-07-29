@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { GET, POST } from "@/app/api/comments/route"
 import { mockDb } from "@/__tests__/setup"

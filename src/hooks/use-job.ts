@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 
 interface JobEvent {
   type: "connected" | "progress" | "complete" | "error" | "cancelled"

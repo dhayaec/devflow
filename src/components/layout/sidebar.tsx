@@ -11,7 +11,6 @@ export async function Sidebar({ orgSlug }: SidebarProps) {
   const session = await auth()
   if (!session?.user?.id) return null
 
-  const org = await db.organization.findUnique({ where: { slug: orgSlug } })
   const memberships = await db.membership.findMany({
     where: { userId: session.user.id },
     include: { organization: true },

@@ -3,11 +3,6 @@
 import dynamic from "next/dynamic"
 import { Suspense } from "react"
 
-interface DynamicImportProps {
-  importFn: () => Promise<{ default: React.ComponentType<unknown> }>
-  fallback?: React.ReactNode
-}
-
 export function createDynamicComponent(
   importFn: () => Promise<{ default: React.ComponentType<unknown> }>,
   fallback?: React.ReactNode,

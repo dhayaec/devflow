@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { CommandPalette } from "./command-palette"
 
-export function CommandPaletteWrapper({ userId: _userId }: { userId: string }) {
+export function CommandPaletteWrapper() {
   const [open, setOpen] = useState(false)
 
   return (
@@ -23,7 +23,6 @@ export function CommandPaletteWrapper({ userId: _userId }: { userId: string }) {
       {open && (
         <CommandPalette
           organizationId=""
-          orgSlug=""
           onClose={() => setOpen(false)}
         />
       )}

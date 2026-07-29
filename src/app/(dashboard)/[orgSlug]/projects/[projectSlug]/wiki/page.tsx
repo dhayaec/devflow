@@ -2,8 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { db } from "@/lib/db"
 import { auth } from "@/auth"
-import { FileText, Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { FileText } from "lucide-react"
 import { CreateWikiDialog } from "./create-wiki-dialog"
 
 export default async function WikiPage({

@@ -3,19 +3,12 @@
 import { useEffect } from "react"
 import { useCollaboration } from "@/hooks/use-collaboration"
 
-interface OnlineUser {
-  userId: string
-  name: string
-  image: string | null
-}
-
 interface PresenceAvatarsProps {
   userId: string
-  orgSlug: string
   orgId: string
 }
 
-export function PresenceAvatars({ userId, orgSlug, orgId }: PresenceAvatarsProps) {
+export function PresenceAvatars({ userId, orgId }: PresenceAvatarsProps) {
   const { onlineUsers, presence, setOnlineUsers } = useCollaboration(userId)
 
   useEffect(() => {
@@ -43,6 +36,7 @@ export function PresenceAvatars({ userId, orgSlug, orgId }: PresenceAvatarsProps
               title={user.name}
             >
               {user.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={user.image}
                   alt={user.name}

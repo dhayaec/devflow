@@ -30,16 +30,18 @@ const COLUMNS = [
 
 export function KanbanBoard({ issues: initialIssues, projectId }: KanbanBoardProps) {
   const [issues, setIssues] = useState<Issue[]>(initialIssues)
+
+  // Sync with server-side prop changes
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIssues(initialIssues)
+  }, [initialIssues])
+
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null)
   const { data: session } = useSession()
   const updateIssue = useUpdateIssue()
   const userId = session?.user?.id
   const collab = useCollaboration(userId)
-
-  // Sync with server-side prop changes
-  useEffect(() => {
-    setIssues(initialIssues)
-  }, [initialIssues])
 
   // Join project room for real-time updates
   useEffect(() => {

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { Pencil, Trash2, Reply } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
 
 interface CommentUser {
   id: string

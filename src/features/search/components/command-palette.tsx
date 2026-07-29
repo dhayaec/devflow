@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { useDebounce } from "@/hooks/use-debounce"
 
 type ResultItem = {
@@ -19,11 +19,9 @@ type SearchResults = {
 
 export function CommandPalette({
   organizationId,
-  orgSlug,
   onClose,
 }: {
   organizationId: string
-  orgSlug: string
   onClose: () => void
 }) {
   const [query, setQuery] = useState("")
@@ -33,9 +31,13 @@ export function CommandPalette({
   const inputRef = useRef<HTMLInputElement>(null)
   const debouncedQuery = useDebounce(query, 200)
 
-  const allResults = results
-    ? [...results.projects, ...results.issues, ...results.documents, ...results.users]
-    : []
+  const allResults = useMemo(
+    () =>
+      results
+        ? [...results.projects, ...results.issues, ...results.documents, ...results.users]
+        : [],
+    [results],
+  )
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -53,16 +55,18 @@ export function CommandPalette({
 
   useEffect(() => {
     if (!debouncedQuery || debouncedQuery.length < 2) {
-      setResults(null)
       return
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
     const params = new URLSearchParams({
       q: debouncedQuery,
       organizationId,
     })
-    fetch(`/api/search?${params}`)
+    const controller = new AbortController()
+
+    fetch(`/api/search?${params}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
         setResults(data.results ?? null)
@@ -70,6 +74,8 @@ export function CommandPalette({
       })
       .catch(() => setResults(null))
       .finally(() => setLoading(false))
+
+    return () => controller.abort()
   }, [debouncedQuery, organizationId])
 
   const handleKeyDown = useCallback(
@@ -111,7 +117,10 @@ export function CommandPalette({
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              if (e.target.value.length < 2) setResults(null)
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Search projects, issues, documents, users..."
             className="flex-1 h-12 bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"

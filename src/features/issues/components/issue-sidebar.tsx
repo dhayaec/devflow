@@ -1,7 +1,6 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Avatar } from "@/components/ui/avatar"
 import { IssuePriority } from "./issue-priority"
 import { IssueLabels } from "./issue-labels"
 import { IssueWatchers } from "./issue-watchers"

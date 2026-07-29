@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, forwardRef } from "react"
+import { useRef } from "react"
 import { useVirtualizer } from "@tanstack/react-virtual"
 
 interface VirtualizedListProps<T> {

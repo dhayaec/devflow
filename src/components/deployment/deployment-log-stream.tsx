@@ -18,7 +18,7 @@ export function DeploymentLogStream({
   environment,
   onComplete,
 }: DeploymentLogStreamProps) {
-  const { jobId, state, subscribe } = useJob()
+  const { state, subscribe } = useJob()
 
   const startDeployment = useCallback(() => {
     const id = `deploy_${deploymentId}`
