@@ -1,4 +1,5 @@
 import { auth } from "@/auth"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { UserMenu } from "@/components/layout/user-menu"
 import { NotificationBell } from "@/features/notifications/components/notification-bell"
 import { CommandPaletteWrapper } from "@/features/search/components/command-palette-wrapper"
@@ -14,6 +15,7 @@ export async function Navbar() {
       <div className="flex items-center gap-2">
         {session?.user?.id && <CommandPaletteWrapper />}
         {session?.user?.id && <NotificationBell userId={session.user.id} />}
+        <ThemeToggle />
         <UserMenu />
       </div>
     </header>

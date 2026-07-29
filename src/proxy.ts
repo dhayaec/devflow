@@ -5,7 +5,7 @@ import { rateLimit } from "@/lib/rate-limiter"
 
 const authMiddleware = NextAuth(authConfig).auth as unknown as (req: NextRequest) => Promise<ReturnType<typeof NextAuth>["auth"]>
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const url = new URL(request.url)
 
   // Rate limit API routes

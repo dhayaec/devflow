@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SessionProvider } from "@/components/auth/session-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { SkipToContent } from "@/components/ui/skip-to-content";
 
 const geistSans = Geist({
@@ -26,10 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(`${geistSans.variable} ${geistMono.variable} h-full antialiased`)}>
+    <html lang="en" className={cn(`${geistSans.variable} ${geistMono.variable} h-full antialiased`)} suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
         <SkipToContent />
-        <SessionProvider>{children}</SessionProvider>
+        <ThemeProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
