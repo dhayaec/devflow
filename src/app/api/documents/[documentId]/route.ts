@@ -61,6 +61,18 @@ export async function PATCH(
     return NextResponse.json({ error: "Document not found" }, { status: 404 })
   }
 
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: doc.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   const body = await request.json()
   const data: Record<string, unknown> = {}
   if (body.title !== undefined) data.title = body.title
@@ -90,6 +102,27 @@ export async function DELETE(
   }
 
   const { documentId } = await params
+
+  const doc = await db.document.findUnique({
+    where: { id: documentId },
+    include: { project: { select: { organizationId: true } } },
+  })
+  if (!doc) {
+    return NextResponse.json({ error: "Document not found" }, { status: 404 })
+  }
+
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: doc.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   await db.document.delete({ where: { id: documentId } })
 
   return NextResponse.json({ success: true })

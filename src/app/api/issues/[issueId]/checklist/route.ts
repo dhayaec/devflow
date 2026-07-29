@@ -27,6 +27,18 @@ export async function POST(
     return NextResponse.json({ error: "Issue not found" }, { status: 404 })
   }
 
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   const maxSort = await db.checklistItem.aggregate({
     where: { issueId },
     _max: { sortOrder: true },

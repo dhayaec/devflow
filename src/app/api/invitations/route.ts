@@ -11,8 +11,12 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
   }
 
+  if (!session.user.email) {
+    return NextResponse.json({ error: "No email on account" }, { status: 400 })
+  }
+
   const invitations = await db.invitation.findMany({
-    where: { email: session.user.email! },
+    where: { email: session.user.email },
     include: {
       organization: {
         select: { id: true, name: true, slug: true },

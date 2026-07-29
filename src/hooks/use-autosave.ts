@@ -6,6 +6,7 @@ export function useAutosave(
   key?: string,
 ) {
   const saveRef = useRef(save)
+  const savingRef = useRef(false)
 
   useEffect(() => {
     saveRef.current = save
@@ -13,7 +14,11 @@ export function useAutosave(
 
   useEffect(() => {
     const timer = setInterval(() => {
-      saveRef.current()
+      if (savingRef.current) return
+      savingRef.current = true
+      saveRef.current().finally(() => {
+        savingRef.current = false
+      })
     }, interval)
 
     return () => clearInterval(timer)

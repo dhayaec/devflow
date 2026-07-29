@@ -46,8 +46,8 @@ export async function PATCH(request: NextRequest) {
       data: { isRead: true },
     })
   } else if (notificationId) {
-    await db.notification.update({
-      where: { id: notificationId },
+    await db.notification.updateMany({
+      where: { id: notificationId, userId: session.user.id },
       data: { isRead: true },
     })
   }

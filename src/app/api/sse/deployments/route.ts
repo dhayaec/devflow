@@ -1,10 +1,16 @@
 import { NextRequest } from "next/server"
+import { auth } from "@/auth"
 import { jobManager } from "@/lib/job-manager"
 
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
 
 export async function GET(request: NextRequest) {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return new Response("Not authenticated", { status: 401 })
+  }
+
   const jobId = request.nextUrl.searchParams.get("jobId")
   if (!jobId) {
     return new Response("jobId required", { status: 400 })

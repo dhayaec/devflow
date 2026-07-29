@@ -1,13 +1,23 @@
 import { NextRequest } from "next/server"
+import { auth } from "@/auth"
 import { db } from "@/lib/db"
 
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
 
 export async function GET(request: NextRequest) {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return new Response("Not authenticated", { status: 401 })
+  }
+
   const userId = request.nextUrl.searchParams.get("userId")
   if (!userId) {
     return new Response("userId required", { status: 400 })
+  }
+
+  if (userId !== session.user.id) {
+    return new Response("Forbidden", { status: 403 })
   }
 
   const encoder = new TextEncoder()

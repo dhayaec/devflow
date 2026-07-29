@@ -53,6 +53,14 @@ export async function PATCH(
   const { orgId } = await params
   const body = await request.json()
 
+  const org = await db.organization.findUnique({
+    where: { id: orgId },
+    select: { id: true },
+  })
+  if (!org) {
+    return NextResponse.json({ error: "Organization not found" }, { status: 404 })
+  }
+
   const canEdit = await checkPermission(
     session.user.id,
     orgId,
@@ -63,7 +71,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 })
   }
 
-  const org = await db.organization.update({
+  const updated = await db.organization.update({
     where: { id: orgId },
     data: {
       ...(body.name && { name: body.name }),
@@ -72,5 +80,5 @@ export async function PATCH(
     },
   })
 
-  return NextResponse.json(org)
+  return NextResponse.json(updated)
 }

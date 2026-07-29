@@ -76,8 +76,12 @@ export function IssueComments({
 
   const deleteComment = async (commentId: string) => {
     if (!confirm("Delete this comment?")) return
-    await fetch(`/api/comments/${commentId}`, { method: "DELETE" })
-    router.refresh()
+    try {
+      const res = await fetch(`/api/comments/${commentId}`, { method: "DELETE" })
+      if (res.ok) router.refresh()
+    } catch {
+      // silently ignore
+    }
   }
 
   const formatDate = (date: string) =>

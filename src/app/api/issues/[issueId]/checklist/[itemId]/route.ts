@@ -22,6 +22,18 @@ export async function PATCH(
     return NextResponse.json({ error: "Issue not found" }, { status: 404 })
   }
 
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   const updated = await db.checklistItem.update({
     where: { id: itemId },
     data: {
@@ -43,6 +55,27 @@ export async function DELETE(
   }
 
   const { itemId } = await params
+
+  const item = await db.checklistItem.findUnique({
+    where: { id: itemId },
+    include: { issue: { select: { project: { select: { organizationId: true } } } } },
+  })
+  if (!item) {
+    return NextResponse.json({ error: "Checklist item not found" }, { status: 404 })
+  }
+
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: item.issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   await db.checklistItem.delete({ where: { id: itemId } })
 
   return NextResponse.json({ success: true })

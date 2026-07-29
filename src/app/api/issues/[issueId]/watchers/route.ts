@@ -13,6 +13,26 @@ export async function POST(
 
   const { issueId } = await params
 
+  const issue = await db.issue.findUnique({
+    where: { id: issueId },
+    select: { project: { select: { organizationId: true } } },
+  })
+  if (!issue) {
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 })
+  }
+
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   const existing = await db.issueWatcher.findUnique({
     where: { issueId_userId: { issueId, userId: session.user.id } },
   })
@@ -35,6 +55,26 @@ export async function DELETE(
   }
 
   const { issueId } = await params
+
+  const issue = await db.issue.findUnique({
+    where: { id: issueId },
+    select: { project: { select: { organizationId: true } } },
+  })
+  if (!issue) {
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 })
+  }
+
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
 
   await db.issueWatcher.deleteMany({
     where: { issueId, userId: session.user.id },

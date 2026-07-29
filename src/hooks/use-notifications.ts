@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 
 type Notification = {
   id: string
@@ -17,6 +17,11 @@ export function useNotifications(userId?: string) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [totalUnread, setTotalUnread] = useState(0)
   const [loading, setLoading] = useState(true)
+  const mountedRef = useRef(true)
+
+  useEffect(() => {
+    return () => { mountedRef.current = false }
+  }, [])
 
   const fetchNotifications = useCallback(async () => {
     try {
@@ -76,11 +81,15 @@ export function useNotifications(userId?: string) {
   }, [userId])
 
   const markAsRead = useCallback(async (notificationId: string) => {
-    await fetch("/api/notifications", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notificationId }),
-    })
+    try {
+      await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
+      })
+    } catch {
+      return
+    }
     setNotifications((prev) =>
       prev.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n)),
     )
@@ -88,11 +97,15 @@ export function useNotifications(userId?: string) {
   }, [])
 
   const markAllAsRead = useCallback(async () => {
-    await fetch("/api/notifications", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ markAll: true }),
-    })
+    try {
+      await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markAll: true }),
+      })
+    } catch {
+      return
+    }
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
     setTotalUnread(0)
   }, [])

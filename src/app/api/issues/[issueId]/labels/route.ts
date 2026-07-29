@@ -22,6 +22,18 @@ export async function POST(
     return NextResponse.json({ error: "Issue not found" }, { status: 404 })
   }
 
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   const link = await db.issueLabel.create({
     data: { issueId, labelId: body.labelId },
     include: { label: true },
@@ -41,6 +53,26 @@ export async function DELETE(
 
   const { issueId } = await params
   const body = await request.json()
+
+  const issue = await db.issue.findUnique({
+    where: { id: issueId },
+    select: { project: { select: { organizationId: true } } },
+  })
+  if (!issue) {
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 })
+  }
+
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: issue.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
 
   await db.issueLabel.deleteMany({
     where: { issueId, labelId: body.labelId },

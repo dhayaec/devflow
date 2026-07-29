@@ -6,9 +6,13 @@ import { io, Socket } from "socket.io-client"
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:3001"
 
 let globalSocket: Socket | null = null
+let globalSocketUserId: string | null = null
 
 function getSocket(userId: string): Socket {
-  if (!globalSocket?.connected) {
+  if (!globalSocket?.connected || globalSocketUserId !== userId) {
+    if (globalSocket) {
+      globalSocket.disconnect()
+    }
     globalSocket = io(SOCKET_URL, {
       query: { userId },
       transports: ["websocket", "polling"],
@@ -17,6 +21,7 @@ function getSocket(userId: string): Socket {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 30000,
     })
+    globalSocketUserId = userId
   }
   return globalSocket
 }

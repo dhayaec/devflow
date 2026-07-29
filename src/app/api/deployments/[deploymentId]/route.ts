@@ -61,6 +61,18 @@ export async function PATCH(
     return NextResponse.json({ error: "Deployment not found" }, { status: 404 })
   }
 
+  const membership = await db.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: session.user.id,
+        organizationId: deployment.project.organizationId,
+      },
+    },
+  })
+  if (!membership) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
   const updated = await db.deployment.update({
     where: { id: deploymentId },
     data: {

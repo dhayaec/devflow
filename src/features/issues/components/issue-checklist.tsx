@@ -27,11 +27,27 @@ export function IssueChecklist({ items, issueId, readonly }: IssueChecklistProps
     setChecklist((prev) =>
       prev.map((i) => (i.id === itemId ? { ...i, isChecked: checked } : i)),
     )
-    await fetch(`/api/issues/${issueId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ checklists: undefined }),
-    })
+    try {
+      const res = await fetch(`/api/issues/${issueId}/checklist/${itemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isChecked: checked }),
+      })
+      if (!res.ok) {
+        // Revert optimistic update on failure
+        setChecklist((prev) =>
+          prev.map((i) =>
+            i.id === itemId ? { ...i, isChecked: !checked } : i,
+          ),
+        )
+      }
+    } catch {
+      setChecklist((prev) =>
+        prev.map((i) =>
+          i.id === itemId ? { ...i, isChecked: !checked } : i,
+        ),
+      )
+    }
   }
 
   const addItem = async () => {
@@ -50,10 +66,16 @@ export function IssueChecklist({ items, issueId, readonly }: IssueChecklistProps
   }
 
   const deleteItem = async (itemId: string) => {
-    await fetch(`/api/issues/${issueId}/checklist/${itemId}`, {
-      method: "DELETE",
-    })
-    setChecklist((prev) => prev.filter((i) => i.id !== itemId))
+    try {
+      const res = await fetch(`/api/issues/${issueId}/checklist/${itemId}`, {
+        method: "DELETE",
+      })
+      if (res.ok) {
+        setChecklist((prev) => prev.filter((i) => i.id !== itemId))
+      }
+    } catch {
+      // silently ignore
+    }
   }
 
   const checked = checklist.filter((i) => i.isChecked).length
