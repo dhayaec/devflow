@@ -122,7 +122,7 @@ export function KanbanBoard({ issues: initialIssues, projectId }: KanbanBoardPro
   )
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
+    <div className="flex-1 flex gap-4 overflow-x-auto px-6 pb-4">
       {COLUMNS.map((col) => (
         <KanbanColumn
           key={col.status}

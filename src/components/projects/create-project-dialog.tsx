@@ -6,6 +6,7 @@ import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
 import {
   Dialog,
   DialogHeader,
@@ -140,19 +141,16 @@ export function CreateProjectDialog({
             {members.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="lead">Project Lead</Label>
-                <select
+                <Select
                   id="lead"
                   value={leadId}
                   onChange={(e) => setLeadId(e.target.value)}
-                  className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                >
-                  <option value="">No lead</option>
-                  {members.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name ?? "Unknown"}
-                    </option>
-                  ))}
-                </select>
+                  options={members.map((m) => ({
+                    value: m.id,
+                    label: m.name ?? "Unknown",
+                  }))}
+                  placeholder="No lead"
+                />
               </div>
             )}
           </DialogContent>

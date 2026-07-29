@@ -152,7 +152,7 @@ export default async function IssueDetailPage({
 
           {/* Description */}
           {issue.description && (
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border bg-card p-4">
               <h3 className="mb-2 text-sm font-medium">Description</h3>
               <p className="text-sm whitespace-pre-wrap">
                 {issue.description}
@@ -162,7 +162,7 @@ export default async function IssueDetailPage({
 
           {/* Checklist */}
           {issue.checklists.length > 0 && (
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border bg-card p-4">
               <IssueChecklist
                 items={JSON.parse(JSON.stringify(issue.checklists))}
                 issueId={issue.id}

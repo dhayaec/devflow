@@ -41,7 +41,7 @@ export default async function OrgLayout({
         <div className="flex items-center justify-end gap-2 px-4 py-1 border-b bg-muted/20">
           <PresenceAvatars userId={session.user.id} orgSlug={orgSlug} orgId={org.id} />
         </div>
-        <main id="main-content" className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1 bg-muted/40">{children}</main>
       </div>
       <MobileNav />
     </div>

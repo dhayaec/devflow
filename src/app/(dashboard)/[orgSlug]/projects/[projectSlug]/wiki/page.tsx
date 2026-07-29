@@ -63,7 +63,7 @@ export default async function WikiPage({
             <Link
               key={doc.id}
               href={`/${orgSlug}/projects/${projectSlug}/wiki/${doc.id}`}
-              className="rounded-lg border p-4 hover:border-ring/50 transition-colors space-y-2"
+              className="rounded-lg border bg-card p-4 hover:border-ring/50 transition-colors space-y-2"
             >
               <div className="flex items-center gap-2">
                 <FileText className="size-4 text-muted-foreground" />

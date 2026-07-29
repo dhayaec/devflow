@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
 import {
   Dialog,
   DialogHeader,
@@ -135,70 +136,67 @@ export function IssueForm({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
-              <select
+              <Select
                 id="type"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3"
-              >
-                <option value="task">Task</option>
-                <option value="bug">Bug</option>
-                <option value="feature">Feature</option>
-                <option value="improvement">Improvement</option>
-                <option value="epic">Epic</option>
-              </select>
+                options={[
+                  { value: "task", label: "Task" },
+                  { value: "bug", label: "Bug" },
+                  { value: "feature", label: "Feature" },
+                  { value: "improvement", label: "Improvement" },
+                  { value: "epic", label: "Epic" },
+                ]}
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="priority">Priority</Label>
-              <select
+              <Select
                 id="priority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3"
-              >
-                <option value="urgent">Urgent</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
+                options={[
+                  { value: "urgent", label: "Urgent" },
+                  { value: "high", label: "High" },
+                  { value: "medium", label: "Medium" },
+                  { value: "low", label: "Low" },
+                ]}
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <select
+              <Select
                 id="status"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3"
-              >
-                <option value="backlog">Backlog</option>
-                <option value="todo">To Do</option>
-                <option value="in_progress">In Progress</option>
-                <option value="review">Review</option>
-                <option value="done">Done</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+                options={[
+                  { value: "backlog", label: "Backlog" },
+                  { value: "todo", label: "To Do" },
+                  { value: "in_progress", label: "In Progress" },
+                  { value: "review", label: "Review" },
+                  { value: "done", label: "Done" },
+                  { value: "cancelled", label: "Cancelled" },
+                ]}
+              />
             </div>
 
             {sprints.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="sprint">Sprint</Label>
-                <select
+                <Select
                   id="sprint"
                   value={sprintId}
                   onChange={(e) => setSprintId(e.target.value)}
-                  className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3"
-                >
-                  <option value="">No sprint</option>
-                  {sprints.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.title}
-                    </option>
-                  ))}
-                </select>
+                  options={sprints.map((s) => ({
+                    value: s.id,
+                    label: s.title,
+                  }))}
+                  placeholder="No sprint"
+                />
               </div>
             )}
           </div>
@@ -206,19 +204,16 @@ export function IssueForm({
           {members.length > 0 && (
             <div className="space-y-2">
               <Label htmlFor="assignee">Assignee</Label>
-              <select
+              <Select
                 id="assignee"
                 value={assigneeId}
                 onChange={(e) => setAssigneeId(e.target.value)}
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3"
-              >
-                <option value="">Unassigned</option>
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name ?? "Unknown"}
-                  </option>
-                ))}
-              </select>
+                options={members.map((m) => ({
+                  value: m.id,
+                  label: m.name ?? "Unknown",
+                }))}
+                placeholder="Unassigned"
+              />
             </div>
           )}
         </DialogContent>

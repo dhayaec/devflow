@@ -46,7 +46,7 @@ export default async function ChannelPage({
   })
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex h-full">
       <ChatSidebar orgSlug={orgSlug} organizationId={org.id} activeChannelId={channelId} />
       <div className="flex-1 flex flex-col">
         <div className="px-4 py-3 border-b">

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
+import { CreateChannelDialog } from "./create-channel-dialog"
 
 export async function ChatSidebar({
   orgSlug,
@@ -59,6 +60,10 @@ export async function ChatSidebar({
           </Link>
         ))}
       </nav>
+
+      <div className="sticky bottom-0 border-t bg-muted/20">
+        <CreateChannelDialog organizationId={organizationId} orgSlug={orgSlug} />
+      </div>
     </div>
   )
 }

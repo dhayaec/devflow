@@ -39,7 +39,7 @@ export default async function OrgTeamsPage({
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => (
-            <div key={team.id} className="rounded-lg border p-4">
+            <div key={team.id} className="rounded-lg border bg-card p-4">
               <h3 className="font-medium">{team.name}</h3>
               {team.description && (
                 <p className="text-sm text-muted-foreground mt-1">

@@ -36,7 +36,7 @@ export function Dialog({ open, onClose, children, className }: DialogProps) {
       ref={ref}
       className={cn(
         "fixed inset-0 z-50 m-auto rounded-xl border bg-background p-0 shadow-lg backdrop:bg-black/50 backdrop:backdrop-blur-sm open:animate-in fade-in-0 zoom-in-95",
-        "max-h-[85vh] w-full max-w-lg",
+        "w-full max-w-lg",
         className,
       )}
       onClick={(e) => {

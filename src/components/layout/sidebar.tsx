@@ -1,7 +1,8 @@
-import Link from "next/link"
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import { OrgSwitcher } from "@/components/org/org-switcher"
+import { SidebarNav } from "./sidebar-nav"
+import { SidebarToggleClient } from "./sidebar-toggle-client"
 
 interface SidebarProps {
   orgSlug: string
@@ -28,34 +29,25 @@ export async function Sidebar({ orgSlug }: SidebarProps) {
   ]
 
   return (
-    <aside className="hidden md:flex w-60 flex-col border-r bg-muted/30">
-      <div className="p-3 border-b">
-        <OrgSwitcher organizations={orgs} />
-      </div>
+    <SidebarToggleClient>
+      <aside className="hidden md:flex w-60 flex-col border-r bg-muted/30 transition-[width] duration-200">
+        <div className="p-3 border-b flex items-center gap-2">
+          <OrgSwitcher organizations={orgs} />
+        </div>
 
-      <nav className="flex-1 p-2 space-y-1">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-          >
-            <span className="w-5 text-center">{item.icon}</span>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+        <SidebarNav items={navItems} />
 
-      <div className="p-3 border-t">
-        <div className="flex items-center gap-2 px-3 py-2 text-sm">
-          <div className="size-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-            {session.user.name?.[0] ?? session.user.email?.[0]}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm truncate">{session.user.name ?? "User"}</p>
+        <div className="p-3 border-t">
+          <div className="flex items-center gap-2 px-3 py-2 text-sm">
+            <div className="size-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium shrink-0">
+              {session.user.name?.[0] ?? session.user.email?.[0]}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm truncate">{session.user.name ?? "User"}</p>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </SidebarToggleClient>
   )
 }

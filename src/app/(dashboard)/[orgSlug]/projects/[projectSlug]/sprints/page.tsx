@@ -3,6 +3,7 @@ import { db } from "@/lib/db"
 import { auth } from "@/auth"
 import { Badge } from "@/components/ui/badge"
 import { SprintProgress } from "@/components/projects/sprint-progress"
+import { CreateSprintDialog } from "@/components/sprints/create-sprint-dialog"
 
 const statusLabels: Record<string, string> = {
   planning: "Planning",
@@ -67,11 +68,14 @@ export default async function SprintsPage({
 
   return (
     <div className="p-6 space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold">Sprints</h1>
-        <p className="text-sm text-muted-foreground">
-          {sprints.length} sprint{sprints.length !== 1 ? "s" : ""}
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold">Sprints</h1>
+          <p className="text-sm text-muted-foreground">
+            {sprints.length} sprint{sprints.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <CreateSprintDialog projectId={project.id} />
       </div>
 
       {sprints.length === 0 ? (
@@ -85,7 +89,7 @@ export default async function SprintsPage({
             return (
               <div
                 key={sprint.id}
-                className="rounded-lg border p-4 space-y-3"
+                className="rounded-lg border bg-card p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <div>

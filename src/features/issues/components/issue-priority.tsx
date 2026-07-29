@@ -2,6 +2,7 @@
 
 import { ChevronUp, ArrowUp, Minus, ArrowDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Select } from "@/components/ui/select"
 
 const priorities = [
   { value: "urgent", label: "Urgent", icon: ChevronUp, color: "text-red-500" },
@@ -38,17 +39,14 @@ export function IssuePriority({
   return (
     <div className="space-y-1">
       <label className="text-xs text-muted-foreground">Priority</label>
-      <select
+      <Select
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-      >
-        {priorities.map((p) => (
-          <option key={p.value} value={p.value}>
-            {p.label}
-          </option>
-        ))}
-      </select>
+        options={priorities.map((p) => ({
+          value: p.value,
+          label: p.label,
+        }))}
+      />
     </div>
   )
 }

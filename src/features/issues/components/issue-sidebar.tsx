@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { Select } from "@/components/ui/select"
 import { IssuePriority } from "./issue-priority"
 import { IssueLabels } from "./issue-labels"
 import { IssueWatchers } from "./issue-watchers"
@@ -94,17 +95,11 @@ export function IssueSidebar({
       {/* Status */}
       <div className="space-y-1.5">
         <label className="text-xs text-muted-foreground">Status</label>
-        <select
+        <Select
           value={status}
           onChange={(e) => updateField("status", e.target.value)}
-          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          {statusOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          options={statusOptions}
+        />
       </div>
 
       {/* Priority */}
@@ -116,39 +111,33 @@ export function IssueSidebar({
       {/* Assignee */}
       <div className="space-y-1.5">
         <label className="text-xs text-muted-foreground">Assignee</label>
-        <select
+        <Select
           value={assignee?.id ?? ""}
           onChange={(e) =>
             updateField("assigneeId", e.target.value || null)
           }
-          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          <option value="">Unassigned</option>
-          {members.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name ?? "Unknown"}
-            </option>
-          ))}
-        </select>
+          options={members.map((m) => ({
+            value: m.id,
+            label: m.name ?? "Unknown",
+          }))}
+          placeholder="Unassigned"
+        />
       </div>
 
       {/* Sprint */}
       <div className="space-y-1.5">
         <label className="text-xs text-muted-foreground">Sprint</label>
-        <select
+        <Select
           value={sprint?.id ?? ""}
           onChange={(e) =>
             updateField("sprintId", e.target.value || null)
           }
-          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          <option value="">No sprint</option>
-          {sprints.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.title}
-            </option>
-          ))}
-        </select>
+          options={sprints.map((s) => ({
+            value: s.id,
+            label: s.title,
+          }))}
+          placeholder="No sprint"
+        />
       </div>
 
       {/* Due Date */}

@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import { checkPermission } from "@/server/authorization"
 import { Permissions } from "@/config/permissions"
+import { ChangePasswordForm } from "@/features/settings/components/change-password-form"
 
 export default async function OrgSettingsPage({
   params,
@@ -33,7 +34,7 @@ export default async function OrgSettingsPage({
         <p className="text-muted-foreground">Manage your organization settings</p>
       </div>
 
-      <div className="rounded-lg border p-4 space-y-4">
+      <div className="rounded-lg border bg-card p-4 space-y-4">
         <div>
           <label className="text-sm font-medium">Organization Name</label>
           <p className="text-lg">{org.name}</p>
@@ -53,6 +54,14 @@ export default async function OrgSettingsPage({
             You have view-only access to settings.
           </p>
         )}
+      </div>
+
+      <div className="rounded-lg border bg-card p-4 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold">Password</h2>
+          <p className="text-sm text-muted-foreground">Update your account password</p>
+        </div>
+        <ChangePasswordForm />
       </div>
     </div>
   )

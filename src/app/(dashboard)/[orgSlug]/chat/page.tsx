@@ -24,7 +24,7 @@ export default async function ChatPage({
   if (!membership) notFound()
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex h-full">
       <ChatSidebar orgSlug={orgSlug} organizationId={org.id} />
       <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
         Select a channel to start chatting

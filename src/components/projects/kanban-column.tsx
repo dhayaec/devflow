@@ -34,7 +34,7 @@ export function KanbanColumn({
 }: KanbanColumnProps) {
   return (
     <div
-      className={`flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30 transition-colors ${
+      className={`flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30 transition-colors max-h-full ${
         isDragOver ? "border-primary bg-primary/5" : ""
       }`}
       onDragOver={(e) => onDragOver?.(e, status)}
@@ -49,7 +49,7 @@ export function KanbanColumn({
         </span>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-2 min-h-[120px]">
+      <div className="flex-1 space-y-2 overflow-y-auto p-2 min-h-0">
         {issues.map((issue) => (
           <KanbanCard
             key={issue.id}

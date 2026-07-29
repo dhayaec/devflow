@@ -57,8 +57,8 @@ export default async function BoardPage({
   })
 
   return (
-    <div className="p-6 space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex items-center justify-between px-6 pt-4 pb-3">
         <div>
           <h1 className="text-lg font-semibold">Board</h1>
           <p className="text-sm text-muted-foreground">
