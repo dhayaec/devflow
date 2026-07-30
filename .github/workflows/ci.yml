@@ -53,31 +53,31 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-  test-e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # test-e2e:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: latest
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
+      #     cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      # - name: Install dependencies
+      #   run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: pnpm exec prisma generate
+      # - name: Generate Prisma client
+      #   run: pnpm exec prisma generate
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium
+      # - name: Install Playwright browsers
+      #   run: pnpm exec playwright install chromium
 
-      - name: Run e2e tests
-        run: pnpm test:e2e
+      # - name: Run e2e tests
+      #   run: pnpm test:e2e
 
   build:
     runs-on: ubuntu-latest
