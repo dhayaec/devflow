@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3"
 import path from "path"
+import fs from "fs"
 import { execSync } from "child_process"
 import bcrypt from "bcryptjs"
 import type { FullConfig } from "@playwright/test"
@@ -49,12 +50,8 @@ async function setupDatabase() {
   const dbPath = path.join(dbDir, "e2e.db")
 
   // Clean up any existing test DB
-  try {
-    execSync(`del "${dbPath}" 2>nul || rm -f "${dbPath}"`, { shell: true })
-    execSync(`del "${dbPath}-journal" 2>nul || rm -f "${dbPath}-journal"`, { shell: true })
-  } catch {
-    // ignore
-  }
+  try { fs.rmSync(dbPath, { force: true }) } catch { /* ignore */ }
+  try { fs.rmSync(`${dbPath}-journal`, { force: true }) } catch { /* ignore */ }
 
   // Push schema to test database
   execSync(
