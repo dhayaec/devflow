@@ -107,7 +107,7 @@ export function CommandPalette({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 cursor-pointer" onClick={onClose} />
       <div className="relative w-full max-w-lg rounded-xl border bg-popover shadow-2xl overflow-hidden">
         <div className="flex items-center border-b px-3">
           <svg className="size-4 shrink-0 text-muted-foreground" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

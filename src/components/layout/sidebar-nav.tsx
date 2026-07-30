@@ -24,7 +24,7 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors",
+              "flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors cursor-pointer",
               isActive
                 ? "bg-accent text-accent-foreground font-medium"
                 : "hover:bg-accent/50 text-muted-foreground hover:text-foreground",

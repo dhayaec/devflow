@@ -68,7 +68,7 @@ export function DialogHeader({
       {onClose && (
         <button
           onClick={onClose}
-          className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          className="cursor-pointer rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         >
           <X className="size-4" />
         </button>

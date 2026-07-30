@@ -18,7 +18,7 @@ export async function Navbar() {
         {session?.user?.id && <CommandPaletteWrapper />}
         {session?.user?.id && <NotificationBell userId={session.user.id} />}
         <ThemeToggle />
-        <UserMenu />
+        {session?.user && <UserMenu user={session.user} />}
       </div>
     </header>
   )

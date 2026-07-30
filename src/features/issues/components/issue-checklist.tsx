@@ -118,7 +118,7 @@ export function IssueChecklist({ items, issueId, readonly }: IssueChecklistProps
             {!readonly && (
               <button
                 onClick={() => deleteItem(item.id)}
-                className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
+                className="cursor-pointer opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
               >
                 <Trash2 className="size-3.5" />
               </button>

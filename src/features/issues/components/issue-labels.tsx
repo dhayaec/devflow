@@ -58,7 +58,7 @@ export function IssueLabels({
             {label.name}
             <button
               onClick={() => onToggleLabel(label.id)}
-              className="hover:opacity-70"
+              className="cursor-pointer hover:opacity-70"
             >
               <X className="size-3" />
             </button>
@@ -85,7 +85,7 @@ export function IssueLabels({
                   onToggleLabel(label.id)
                   setOpen(false)
                 }}
-                className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-accent"
+                className="flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-accent"
               >
                 <span
                   className="size-3 rounded-full"

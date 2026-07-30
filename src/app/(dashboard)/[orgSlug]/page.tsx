@@ -40,7 +40,7 @@ export default async function OrgDashboardPage({
       </div>
 
       <Suspense fallback={<WidgetFallback height="h-24" />}>
-        <WidgetStats organizationId={org.id} />
+        <WidgetStats organizationId={org.id} orgSlug={orgSlug} />
       </Suspense>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

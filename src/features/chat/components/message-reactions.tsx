@@ -17,7 +17,7 @@ export function MessageReactions({ reactions }: { reactions: Reaction[] }) {
       {Object.entries(grouped).map(([emoji, rs]) => (
         <button
           key={emoji}
-          className="inline-flex items-center gap-1 rounded-full border bg-muted/50 px-2 py-0.5 text-xs hover:bg-muted transition-colors"
+          className="inline-flex cursor-pointer items-center gap-1 rounded-full border bg-muted/50 px-2 py-0.5 text-xs hover:bg-muted transition-colors"
         >
           <span>{emoji}</span>
           <span className="text-muted-foreground">{rs.length}</span>
