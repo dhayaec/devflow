@@ -1,8 +1,12 @@
 import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
+import bcrypt from "bcryptjs"
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
+
+const ADMIN_EMAIL = "admin@devflow.app"
+const ADMIN_PASSWORD = "admin123"
 
 const PERMISSIONS = [
   // Organization
@@ -154,6 +158,40 @@ async function main() {
     })
 
     console.log(`  Created role: ${roleName} (${role.id})`)
+  }
+
+  console.log("Creating admin user...")
+  const ownerRole = await prisma.role.findFirst({
+    where: { name: "Owner", organizationId: seedOrg.id },
+  })
+
+  const existingAdmin = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } })
+  if (existingAdmin) {
+    console.log(`  Admin user "${ADMIN_EMAIL}" already exists, skipping`)
+  } else {
+    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12)
+    const adminUser = await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: ADMIN_EMAIL,
+        password: hashedPassword,
+        emailVerified: new Date(),
+      },
+    })
+    console.log(`  Created admin user: ${adminUser.email}`)
+
+    if (ownerRole) {
+      await prisma.membership.upsert({
+        where: { userId_organizationId: { userId: adminUser.id, organizationId: seedOrg.id } },
+        update: { roleId: ownerRole.id },
+        create: {
+          userId: adminUser.id,
+          organizationId: seedOrg.id,
+          roleId: ownerRole.id,
+        },
+      })
+      console.log(`  Added admin to "${seedOrg.name}" as Owner`)
+    }
   }
 
   console.log("Seed complete!")
