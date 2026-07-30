@@ -6,6 +6,7 @@
     "dev": "next dev",
     "prebuild": "pnpm typecheck && rimraf .next",
     "build": "next build",
+    "pretypecheck": "prisma generate",
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "start": "next start",
     "lint": "eslint",

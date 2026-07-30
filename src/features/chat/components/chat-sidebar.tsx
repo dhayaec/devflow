@@ -42,7 +42,7 @@ export async function ChatSidebar({
             No channels yet
           </p>
         )}
-        {channels.map((channel) => (
+        {channels.map((channel: (typeof channels)[number]) => (
           <Link
             key={channel.id}
             href={`/${orgSlug}/chat/${channel.id}`}
