@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "rimraf .next",
+    "prebuild": "pnpm typecheck && rimraf .next",
     "build": "next build",
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",

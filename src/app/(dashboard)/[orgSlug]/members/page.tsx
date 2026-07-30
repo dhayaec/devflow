@@ -34,6 +34,8 @@ export default async function OrgMembersPage({
     orderBy: { joinedAt: "asc" },
   })
 
+  type Member = (typeof members)[number]
+
   return (
     <div className="p-6 space-y-6">
       <div>
@@ -44,7 +46,7 @@ export default async function OrgMembersPage({
       </div>
 
       <div className="rounded-lg border">
-        {members.map((member) => (
+        {members.map((member: Member) => (
           <div
             key={member.id}
             className="flex items-center justify-between p-4 border-b last:border-b-0"

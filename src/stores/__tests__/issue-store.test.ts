@@ -1,13 +1,20 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { useIssueStore } from "@/stores/issue-store"
+import type { Issue } from "@/types/issue"
 
-const mockIssue = (id: string, overrides = {}) => ({
+const mockIssue = (id: string, overrides: Partial<Issue> = {}): Issue => ({
   id,
   title: `Issue ${id}`,
+  description: null,
   status: "backlog",
   priority: "medium",
   type: "task",
   projectId: "proj-1",
+  sprintId: null,
+  reporterId: "user-1",
+  assigneeId: null,
+  dueDate: null,
+  estimate: null,
   sortOrder: 1000,
   assignee: null,
   reporter: { id: "user-1", name: "Test", image: null },
