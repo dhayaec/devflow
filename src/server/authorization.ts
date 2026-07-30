@@ -27,7 +27,7 @@ export async function getMemberPermissions(
 
   if (!membership) return []
 
-  return membership.role.rolePermissions.map((rp) => rp.permission.action)
+  return membership.role.rolePermissions.map((rp: (typeof membership.role.rolePermissions)[number]) => rp.permission.action)
 }
 
 export async function checkPermission(

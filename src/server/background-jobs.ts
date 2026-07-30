@@ -116,13 +116,14 @@ export async function runExportJob(
           assignee: { select: { name: true } },
         },
       })
-      data = issues.map((i) => ({
+      type ExportIssue = (typeof issues)[number]
+      data = issues.map((i: ExportIssue) => ({
         title: i.title,
         status: i.status,
         priority: i.priority,
         type: i.type,
         assignee: i.assignee?.name ?? null,
-        labels: i.labels.map((l) => l.label.name).join(", "),
+        labels: i.labels.map((l: ExportIssue["labels"][number]) => l.label.name).join(", "),
         createdAt: i.createdAt.toISOString(),
       }))
       jobManager.updateProgress(job.id, 60, `Found ${data.length} issues`)
@@ -131,7 +132,8 @@ export async function runExportJob(
       const docs = await db.document.findMany({
         where: { projectId },
       })
-      data = docs.map((d) => ({
+      type ExportDoc = (typeof docs)[number]
+      data = docs.map((d: ExportDoc) => ({
         title: d.title,
         content: d.content,
         updatedAt: d.updatedAt.toISOString(),

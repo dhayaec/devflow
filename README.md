@@ -1,4 +1,4 @@
-# DevFlow
+# DevFlow - Project Management Tool
 
 A developer collaboration platform with projects, issues, sprints, kanban boards, chat, wiki, and more.
 
@@ -46,36 +46,36 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|---|---|---|
-| `DATABASE_URL` | SQLite database path | Yes |
-| `AUTH_SECRET` | Auth encryption secret | Yes |
-| `AUTH_URL` | App base URL (e.g. `http://localhost:3000`) | Yes |
-| `AUTH_GOOGLE_ID` | Google OAuth client ID | No |
-| `AUTH_GOOGLE_SECRET` | Google OAuth client secret | No |
-| `AUTH_GITHUB_ID` | GitHub OAuth App ID | No |
-| `AUTH_GITHUB_SECRET` | GitHub OAuth App secret | No |
-| `AUTH_RESEND_KEY` | Resend API key for email auth | No |
-| `AUTH_EMAIL_FROM` | From address for auth emails | No |
-| `STORAGE_ENDPOINT` | S3-compatible storage endpoint | No |
-| `STOR_REGION` | Storage region | No |
-| `STORAGE_ACCESS_KEY` | Storage access key | No |
-| `STORAGE_SECRET_KEY` | Storage secret key | No |
-| `STORAGE_BUCKET` | Storage bucket name | No |
-| `REDIS_URL` | Redis connection string | No |
+| Variable             | Description                                 | Required |
+| -------------------- | ------------------------------------------- | -------- |
+| `DATABASE_URL`       | SQLite database path                        | Yes      |
+| `AUTH_SECRET`        | Auth encryption secret                      | Yes      |
+| `AUTH_URL`           | App base URL (e.g. `http://localhost:3000`) | Yes      |
+| `AUTH_GOOGLE_ID`     | Google OAuth client ID                      | No       |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret                  | No       |
+| `AUTH_GITHUB_ID`     | GitHub OAuth App ID                         | No       |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth App secret                     | No       |
+| `AUTH_RESEND_KEY`    | Resend API key for email auth               | No       |
+| `AUTH_EMAIL_FROM`    | From address for auth emails                | No       |
+| `STORAGE_ENDPOINT`   | S3-compatible storage endpoint              | No       |
+| `STOR_REGION`        | Storage region                              | No       |
+| `STORAGE_ACCESS_KEY` | Storage access key                          | No       |
+| `STORAGE_SECRET_KEY` | Storage secret key                          | No       |
+| `STORAGE_BUCKET`     | Storage bucket name                         | No       |
+| `REDIS_URL`          | Redis connection string                     | No       |
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Production build |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm test` | Run tests (watch mode) |
-| `pnpm test:run` | Run tests once |
-| `pnpm db:generate` | Generate Prisma client |
-| `pnpm db:push` | Push schema to database |
-| `pnpm db:studio` | Open Prisma Studio |
-| `pnpm db:seed` | Seed database |
-| `pnpm test:e2e` | Run Playwright E2E tests |
+| Command            | Description              |
+| ------------------ | ------------------------ |
+| `pnpm dev`         | Start dev server         |
+| `pnpm build`       | Production build         |
+| `pnpm start`       | Start production server  |
+| `pnpm lint`        | Run ESLint               |
+| `pnpm test`        | Run tests (watch mode)   |
+| `pnpm test:run`    | Run tests once           |
+| `pnpm db:generate` | Generate Prisma client   |
+| `pnpm db:push`     | Push schema to database  |
+| `pnpm db:studio`   | Open Prisma Studio       |
+| `pnpm db:seed`     | Seed database            |
+| `pnpm test:e2e`    | Run Playwright E2E tests |

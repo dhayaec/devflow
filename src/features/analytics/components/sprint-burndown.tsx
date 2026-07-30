@@ -12,14 +12,16 @@ export async function SprintBurndown({ sprintId }: { sprintId: string }) {
 
   if (!sprint) return null
 
+  type SprintIssue = { status: string; estimate: number | null }
+
   const totalIssues = sprint.issues.length
   const doneIssues = sprint.issues.filter(
-    (i) => i.status === "done" || i.status === "cancelled",
+    (i: SprintIssue) => i.status === "done" || i.status === "cancelled",
   ).length
-  const totalEstimate = sprint.issues.reduce((sum, i) => sum + (i.estimate ?? 0), 0)
+  const totalEstimate = sprint.issues.reduce((sum: number, i: SprintIssue) => sum + (i.estimate ?? 0), 0)
   const doneEstimate = sprint.issues
-    .filter((i) => i.status === "done" || i.status === "cancelled")
-    .reduce((sum, i) => sum + (i.estimate ?? 0), 0)
+    .filter((i: SprintIssue) => i.status === "done" || i.status === "cancelled")
+    .reduce((sum: number, i: SprintIssue) => sum + (i.estimate ?? 0), 0)
 
   return (
     <div className="rounded-lg border p-4">

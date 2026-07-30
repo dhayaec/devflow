@@ -1,4 +1,4 @@
-import { vi } from "vitest"
+import { vi, type Mock } from "vitest"
 import { auth } from "@/auth"
 
 type SessionUser = {
@@ -26,6 +26,8 @@ type Membership = {
   role?: MembershipRole["role"]
 }
 
+const mockAuth = auth as unknown as Mock
+
 export function mockAuthenticated(user: Partial<SessionUser> = {}) {
   const defaultUser: SessionUser = {
     id: "user-1",
@@ -34,14 +36,14 @@ export function mockAuthenticated(user: Partial<SessionUser> = {}) {
     image: null,
   }
 
-  vi.mocked(auth).mockResolvedValue({
+  mockAuth.mockResolvedValue({
     user: { ...defaultUser, ...user },
     expires: new Date(Date.now() + 86400000).toISOString(),
   })
 }
 
 export function mockUnauthenticated() {
-  vi.mocked(auth).mockResolvedValue(null)
+  mockAuth.mockResolvedValue(null)
 }
 
 export function createMembership(overrides: Partial<Membership> = {}): Membership {
