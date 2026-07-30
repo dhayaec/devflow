@@ -192,7 +192,7 @@ export function IssueComments({
                           replyTo === comment.id ? null : comment.id,
                         )
                       }}
-                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                      className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                     >
                       <Reply className="size-3" />
                       Reply
@@ -205,14 +205,14 @@ export function IssueComments({
                               setEditingId(comment.id)
                               setEditText(comment.body)
                             }}
-                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                            className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                           >
                             <Pencil className="size-3" />
                             Edit
                           </button>
                           <button
                             onClick={() => deleteComment(comment.id)}
-                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
+                            className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
                           >
                             <Trash2 className="size-3" />
                             Delete

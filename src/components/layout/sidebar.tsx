@@ -36,17 +36,6 @@ export async function Sidebar({ orgSlug }: SidebarProps) {
         </div>
 
         <SidebarNav items={navItems} />
-
-        <div className="p-3 border-t">
-          <div className="flex items-center gap-2 px-3 py-2 text-sm">
-            <div className="size-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium shrink-0">
-              {session.user.name?.[0] ?? session.user.email?.[0]}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm truncate">{session.user.name ?? "User"}</p>
-            </div>
-          </div>
-        </div>
       </aside>
     </SidebarToggleClient>
   )

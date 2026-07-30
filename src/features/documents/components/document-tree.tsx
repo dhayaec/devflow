@@ -98,7 +98,7 @@ export function DocumentTree({
                   e.stopPropagation()
                   toggleCollapse(doc.id)
                 }}
-                className="shrink-0 text-muted-foreground"
+                className="shrink-0 cursor-pointer text-muted-foreground"
               >
                 {isCollapsed ? (
                   <ChevronRight className="size-3.5" />
@@ -119,7 +119,7 @@ export function DocumentTree({
                 e.stopPropagation()
                 createDoc(doc.id)
               }}
-              className="flex size-5 items-center justify-center rounded text-muted-foreground hover:bg-accent"
+              className="flex size-5 cursor-pointer items-center justify-center rounded text-muted-foreground hover:bg-accent"
               title="Add sub-page"
             >
               <Plus className="size-3" />
@@ -127,7 +127,7 @@ export function DocumentTree({
             <button
               type="button"
               onClick={(e) => deleteDoc(doc.id, e)}
-              className="flex size-5 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-destructive"
+              className="flex size-5 cursor-pointer items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-destructive"
               title="Delete"
             >
               <Trash2 className="size-3" />

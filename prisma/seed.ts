@@ -5,6 +5,9 @@ import bcrypt from "bcryptjs"
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
 
+const OWNER_EMAIL = "owner@devflow.app"
+const OWNER_PASSWORD = "owner123"
+
 const ADMIN_EMAIL = "admin@devflow.app"
 const ADMIN_PASSWORD = "admin123"
 
@@ -100,6 +103,24 @@ const ROLE_DEFINITIONS: Record<string, string[]> = {
   ),
 }
 
+interface SeedIssue {
+  title: string
+  type: string
+  priority: string
+  label: string
+}
+
+const LABEL_COLORS: Record<string, string> = {
+  bug: "#ef4444",
+  feature: "#22c55e",
+  enhancement: "#3b82f6",
+  documentation: "#f59e0b",
+}
+
+function labelColor(name: string): string {
+  return LABEL_COLORS[name] ?? "#6366f1"
+}
+
 async function main() {
   console.log("Seeding permissions...")
   const permissionMap = new Map<string, string>()
@@ -160,37 +181,233 @@ async function main() {
     console.log(`  Created role: ${roleName} (${role.id})`)
   }
 
-  console.log("Creating admin user...")
-  const ownerRole = await prisma.role.findFirst({
-    where: { name: "Owner", organizationId: seedOrg.id },
-  })
+  async function getOrCreateUser(
+    email: string,
+    password: string,
+    name: string,
+  ) {
+    const existing = await prisma.user.findUnique({ where: { email } })
+    if (existing) {
+      console.log(`  User "${email}" already exists, skipping`)
+      return existing
+    }
 
-  const existingAdmin = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } })
-  if (existingAdmin) {
-    console.log(`  Admin user "${ADMIN_EMAIL}" already exists, skipping`)
-  } else {
-    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12)
-    const adminUser = await prisma.user.create({
+    const hashedPassword = await bcrypt.hash(password, 12)
+    const user = await prisma.user.create({
       data: {
-        name: "Admin",
-        email: ADMIN_EMAIL,
+        name,
+        email,
         password: hashedPassword,
         emailVerified: new Date(),
       },
     })
-    console.log(`  Created admin user: ${adminUser.email}`)
+    console.log(`  Created user: ${user.email}`)
+    return user
+  }
 
-    if (ownerRole) {
-      await prisma.membership.upsert({
-        where: { userId_organizationId: { userId: adminUser.id, organizationId: seedOrg.id } },
-        update: { roleId: ownerRole.id },
-        create: {
-          userId: adminUser.id,
-          organizationId: seedOrg.id,
-          roleId: ownerRole.id,
+  async function addUserToOrg(
+    user: { id: string },
+    organizationId: string,
+    orgName: string,
+    roleName: string,
+  ) {
+    const role = await prisma.role.findFirst({
+      where: { name: roleName, organizationId },
+    })
+    if (!role) {
+      console.log(`  Role "${roleName}" not found in org "${orgName}", skipping membership`)
+      return
+    }
+
+    await prisma.membership.upsert({
+      where: { userId_organizationId: { userId: user.id, organizationId } },
+      update: { roleId: role.id },
+      create: {
+        userId: user.id,
+        organizationId,
+        roleId: role.id,
+      },
+    })
+    console.log(`  Added "${user.id}" to "${orgName}" as ${roleName}`)
+  }
+
+  console.log("Creating seed users...")
+  const ownerUser = await getOrCreateUser(OWNER_EMAIL, OWNER_PASSWORD, "Owner")
+  const adminUser = await getOrCreateUser(ADMIN_EMAIL, ADMIN_PASSWORD, "Admin")
+
+  // Add both users to the template org
+  await addUserToOrg(ownerUser, seedOrg.id, seedOrg.name, "Owner")
+  await addUserToOrg(adminUser, seedOrg.id, seedOrg.name, "Admin")
+
+  // ─── Owner's personal organization ────────────────────────────────────────
+
+  console.log("Creating owner organization...")
+  const ownerOrgSlug = "acme-corp"
+  let ownerOrg = await prisma.organization.findUnique({ where: { slug: ownerOrgSlug } })
+  if (!ownerOrg) {
+    ownerOrg = await prisma.organization.create({
+      data: {
+        name: "Acme Corp",
+        slug: ownerOrgSlug,
+        description: "Owner's sample organization",
+      },
+    })
+    console.log(`  Created organization: ${ownerOrg.name}`)
+  } else {
+    console.log(`  Organization "${ownerOrgSlug}" already exists, skipping`)
+  }
+
+  // Ensure the owner has an Owner role in their org (create Owner role if needed)
+  let ownerOrgOwnerRole = await prisma.role.findFirst({
+    where: { name: "Owner", organizationId: ownerOrg.id },
+  })
+  if (!ownerOrgOwnerRole) {
+    ownerOrgOwnerRole = await prisma.role.create({
+      data: {
+        name: "Owner",
+        description: "Default Owner role",
+        organizationId: ownerOrg.id,
+        isSystem: true,
+        rolePermissions: {
+          create: ROLE_DEFINITIONS["Owner"]
+            .filter((a) => permissionMap.has(a))
+            .map((a) => ({ permissionId: permissionMap.get(a)! })),
+        },
+      },
+    })
+  }
+
+  await addUserToOrg(ownerUser, ownerOrg.id, ownerOrg.name, "Owner")
+
+  // Also create a project-level role for the owner org
+  let devRole = await prisma.role.findFirst({
+    where: { name: "Developer", organizationId: ownerOrg.id },
+  })
+  if (!devRole) {
+    devRole = await prisma.role.create({
+      data: {
+        name: "Developer",
+        description: "Default Developer role",
+        organizationId: ownerOrg.id,
+        isSystem: true,
+        rolePermissions: {
+          create: ROLE_DEFINITIONS["Developer"]
+            .filter((a) => permissionMap.has(a))
+            .map((a) => ({ permissionId: permissionMap.get(a)! })),
+        },
+      },
+    })
+    console.log(`  Created Developer role in ${ownerOrg.name}`)
+  }
+
+  // ─── Projects ────────────────────────────────────────────────────────────
+
+  console.log("Creating projects...")
+
+  interface SeedProject {
+    name: string
+    slug: string
+    description: string
+  }
+
+  const seedProjects: SeedProject[] = [
+    { name: "Website Redesign", slug: "website-redesign", description: "Complete overhaul of the company website" },
+    { name: "Mobile App", slug: "mobile-app", description: "Cross-platform mobile application" },
+  ]
+
+  const labelsByProject = new Map<string, string[]>()
+  const issuesByProject = new Map<string, SeedIssue[]>()
+
+  for (const proj of seedProjects) {
+    let project = await prisma.project.findUnique({
+      where: { organizationId_slug: { organizationId: ownerOrg.id, slug: proj.slug } },
+    })
+
+    if (project) {
+      console.log(`  Project "${proj.name}" already exists, skipping`)
+      continue
+    }
+
+    project = await prisma.project.create({
+      data: {
+        name: proj.name,
+        slug: proj.slug,
+        description: proj.description,
+        organizationId: ownerOrg.id,
+        leadId: ownerUser.id,
+      },
+    })
+    console.log(`  Created project: ${project.name}`)
+
+    // Labels
+    const labelNames = ["bug", "feature", "enhancement", "documentation"]
+    const createdLabels: string[] = []
+    for (const labelName of labelNames) {
+      const label = await prisma.label.upsert({
+        where: { name_projectId: { name: labelName, projectId: project.id } },
+        update: {},
+        create: { name: labelName, color: labelColor(labelName), projectId: project.id },
+      })
+      createdLabels.push(label.id)
+    }
+    labelsByProject.set(project.id, createdLabels)
+
+    // Sprint
+    const sprint = await prisma.sprint.create({
+      data: {
+        title: "Sprint 1",
+        goal: "Initial setup and core features",
+        projectId: project.id,
+        status: "active",
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      },
+    })
+
+    // Define per-project issues
+    const projIssues: SeedIssue[] =
+      project.slug === "website-redesign"
+        ? [
+            { title: "Design new homepage layout", type: "feature", priority: "high", label: "feature" },
+            { title: "Fix navigation bar responsiveness", type: "bug", priority: "high", label: "bug" },
+            { title: "Add contact form", type: "feature", priority: "medium", label: "feature" },
+            { title: "Write API documentation", type: "task", priority: "low", label: "documentation" },
+          ]
+        : [
+            { title: "Set up project structure", type: "task", priority: "high", label: "enhancement" },
+            { title: "Implement user authentication", type: "feature", priority: "high", label: "feature" },
+            { title: "Fix login screen crash on Android", type: "bug", priority: "urgent", label: "bug" },
+          ]
+
+    for (let i = 0; i < projIssues.length; i++) {
+      const issue = projIssues[i]
+      const labelIds = labelsByProject.get(project.id) ?? []
+      const matchingLabel = createdLabels[labelNames.indexOf(issue.label)]
+      const existingIssue = await prisma.issue.findFirst({
+        where: { title: issue.title, projectId: project.id },
+      })
+      if (existingIssue) {
+        console.log(`    Issue "${issue.title}" already exists, skipping`)
+        continue
+      }
+      const createdIssue = await prisma.issue.create({
+        data: {
+          title: issue.title,
+          description: `Description for: ${issue.title}`,
+          type: issue.type,
+          priority: issue.priority,
+          status: i === 0 ? "in_progress" : "backlog",
+          projectId: project.id,
+          sprintId: sprint.id,
+          reporterId: ownerUser.id,
+          assigneeId: ownerUser.id,
+          sortOrder: i,
+          labels: matchingLabel
+            ? { create: [{ labelId: matchingLabel }] }
+            : undefined,
         },
       })
-      console.log(`  Added admin to "${seedOrg.name}" as Owner`)
+      console.log(`    Created issue: ${createdIssue.title}`)
     }
   }
 

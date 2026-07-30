@@ -34,14 +34,14 @@ export function KanbanColumn({
 }: KanbanColumnProps) {
   return (
     <div
-      className={`flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30 transition-colors max-h-full ${
+      className={`flex flex-1 min-w-0 flex-col rounded-lg border bg-muted/30 transition-colors max-h-full ${
         isDragOver ? "border-primary bg-primary/5" : ""
       }`}
       onDragOver={(e) => onDragOver?.(e, status)}
       onDragLeave={onDragLeave}
       onDrop={(e) => onDrop?.(e, status)}
     >
-      <div className="flex items-center gap-2 border-b px-3 py-2.5">
+      <div className="flex items-center gap-2 border-b px-2.5 py-2">
         <div className={`size-2 rounded-full ${color}`} />
         <span className="text-sm font-medium">{title}</span>
         <span className="ml-auto text-xs text-muted-foreground">
@@ -49,7 +49,7 @@ export function KanbanColumn({
         </span>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-2 min-h-0">
+      <div className="flex-1 space-y-1.5 overflow-y-auto p-1.5 min-h-0">
         {issues.map((issue) => (
           <KanbanCard
             key={issue.id}
@@ -88,17 +88,17 @@ function KanbanCard({
     <div
       draggable
       onDragStart={(e) => onDragStart?.(e, issue.id, status)}
-      className={`cursor-grab rounded-lg border border-l-2 bg-background p-3 shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing ${
+      className={`cursor-grab rounded-lg border border-l-[3px] bg-background p-2.5 shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing ${
         priorityColor[issue.priority] ?? "border-l-gray-400"
       }`}
     >
-      <p className="text-sm leading-snug">{issue.title}</p>
-      <div className="mt-2 flex items-center gap-2">
+      <p className="text-sm leading-snug line-clamp-2">{issue.title}</p>
+      <div className="mt-1.5 flex items-center gap-2">
         <span className="text-[10px] uppercase text-muted-foreground">
           {issue.priority}
         </span>
         {issue.assignee && (
-          <span className="ml-auto text-xs text-muted-foreground">
+          <span className="ml-auto text-xs text-muted-foreground truncate">
             {issue.assignee.name ?? "Unassigned"}
           </span>
         )}

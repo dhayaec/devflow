@@ -45,8 +45,8 @@ export default async function ProjectLayout({
   ]
 
   return (
-    <div className="flex flex-col">
-      <div className="border-b">
+    <div className="flex flex-col h-full">
+      <div className="border-b shrink-0">
         <div className="px-6 pt-4 pb-0">
           <div className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
             <Link href={`/${orgSlug}/projects`} className="hover:text-foreground">
@@ -60,7 +60,7 @@ export default async function ProjectLayout({
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors aria-[current=page]:border-primary aria-[current=page]:text-foreground"
+                className="px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors cursor-pointer aria-[current=page]:border-primary aria-[current=page]:text-foreground"
               >
                 {tab.label}
               </Link>
@@ -68,7 +68,7 @@ export default async function ProjectLayout({
           </nav>
         </div>
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 min-h-0">{children}</div>
     </div>
   )
 }

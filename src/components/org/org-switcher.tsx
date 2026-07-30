@@ -40,7 +40,7 @@ export function OrgSwitcher({ organizations }: OrgSwitcherProps) {
       {open && (
         <>
           <div
-            className="fixed inset-0 z-10"
+            className="fixed inset-0 z-10 cursor-pointer"
             onClick={() => setOpen(false)}
           />
           <div className="absolute top-full mt-1 w-full rounded-md border bg-popover p-1 shadow-md z-20">
@@ -48,7 +48,7 @@ export function OrgSwitcher({ organizations }: OrgSwitcherProps) {
               <button
                 key={org.id}
                 onClick={() => switchOrg(org.slug)}
-                className="w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground"
+                className="w-full cursor-pointer text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground"
               >
                 {org.name}
               </button>

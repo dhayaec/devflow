@@ -34,14 +34,16 @@ export default async function OrgLayout({
   if (!membership) notFound()
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar orgSlug={orgSlug} />
-      <div className="flex-1 flex flex-col pb-14 md:pb-0">
+      <div className="flex-1 flex flex-col min-w-0">
         <Navbar />
-        <div className="flex items-center justify-end gap-2 px-4 py-1 border-b bg-muted/20">
+        <div className="flex items-center justify-end gap-2 px-4 py-1 border-b bg-muted/20 shrink-0">
           <PresenceAvatars userId={session.user.id} orgId={org.id} />
         </div>
-        <main id="main-content" className="flex-1 bg-muted/40">{children}</main>
+        <main id="main-content" className="flex-1 overflow-y-auto bg-muted/40 pb-14 md:pb-0">
+          {children}
+        </main>
       </div>
       <MobileNav />
     </div>

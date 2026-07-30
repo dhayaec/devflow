@@ -72,7 +72,7 @@ export function ChatInput({
         <button
           type="submit"
           disabled={!text.trim() || sending}
-          className="inline-flex items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
+          className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
         >
           Send
         </button>

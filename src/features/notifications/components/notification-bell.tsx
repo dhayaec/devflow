@@ -26,7 +26,7 @@ export function NotificationBell({ userId }: { userId?: string }) {
           setOpen(!open)
           if (!open) refresh()
         }}
-        className="relative size-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors"
+        className="relative size-8 flex cursor-pointer items-center justify-center rounded-md hover:bg-accent transition-colors"
         aria-label={`Notifications${totalUnread > 0 ? ` (${totalUnread} unread)` : ""}`}
       >
         <svg className="size-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -46,7 +46,7 @@ export function NotificationBell({ userId }: { userId?: string }) {
             {totalUnread > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-xs text-primary hover:underline"
+                className="cursor-pointer text-xs text-primary hover:underline"
               >
                 Mark all read
               </button>
@@ -62,7 +62,7 @@ export function NotificationBell({ userId }: { userId?: string }) {
                 <button
                   key={n.id}
                   onClick={() => markAsRead(n.id)}
-                  className={`w-full text-left px-3 py-2.5 text-sm hover:bg-muted/50 transition-colors ${
+                  className={`w-full cursor-pointer text-left px-3 py-2.5 text-sm hover:bg-muted/50 transition-colors ${
                     !n.isRead ? "bg-muted/30 border-l-2 border-primary" : ""
                   }`}
                 >

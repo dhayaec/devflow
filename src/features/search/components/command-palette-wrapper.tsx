@@ -10,7 +10,7 @@ export function CommandPaletteWrapper() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 h-8 rounded-md border border-input bg-transparent px-3 text-xs text-muted-foreground hover:bg-accent transition-colors w-32"
+        className="flex items-center gap-2 h-8 rounded-md border border-input bg-transparent px-3 text-xs text-muted-foreground hover:bg-accent transition-colors cursor-pointer w-32"
         aria-label="Search"
       >
         <svg className="size-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

@@ -66,6 +66,9 @@
     "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "devDependencies": {
     "@playwright/test": "^1.62.0",
     "@tailwindcss/postcss": "^4",

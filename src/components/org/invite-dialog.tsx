@@ -45,7 +45,7 @@ export function InviteDialog({ organizationId, open, onOpenChange }: InviteDialo
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/50" onClick={() => onOpenChange(false)} />
+      <div className="fixed inset-0 z-50 bg-black/50 cursor-pointer" onClick={() => onOpenChange(false)} />
       <div className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-lg border bg-background p-6 shadow-lg">
         <h2 className="text-lg font-semibold mb-4">Invite Member</h2>
 

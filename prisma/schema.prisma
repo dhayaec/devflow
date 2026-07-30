@@ -13,6 +13,7 @@ model User {
   emailVerified    DateTime?
   image            String?
   password         String?
+  userType         String   @default("member")
   timezone         String   @default("UTC")
   locale           String   @default("en")
   twoFactorEnabled Boolean  @default(false)
