@@ -125,6 +125,47 @@ describe("POST /api/sprints", () => {
     expect(response.status).toBe(403)
   })
 
+  it("returns 403 when not a member", async () => {
+    mockAuthenticated()
+    mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)
+    mockDb.membership.findUnique.mockResolvedValue(null)
+
+    const request = createNextRequest("http://localhost:3000/api/sprints", {
+      method: "POST",
+      body: JSON.stringify({ title: "Sprint 1", projectId: "proj-1" }),
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(403)
+  })
+
+  it("creates a sprint with dates", async () => {
+    mockAuthenticated()
+    mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)
+    mockDb.membership.findUnique.mockResolvedValue({
+      ...createMembership(),
+      role: createAdminRole(),
+    })
+    mockDb.sprint.create.mockResolvedValue({} as any)
+
+    const request = createNextRequest("http://localhost:3000/api/sprints", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Sprint 1", projectId: "proj-1",
+        startDate: "2026-08-01T00:00:00.000Z", endDate: "2026-08-14T00:00:00.000Z",
+      }),
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(201)
+    expect(mockDb.sprint.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          startDate: expect.any(Date),
+          endDate: expect.any(Date),
+        }),
+      }),
+    )
+  })
+
   it("creates a sprint successfully", async () => {
     mockAuthenticated()
     mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)

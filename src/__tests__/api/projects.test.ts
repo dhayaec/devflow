@@ -169,6 +169,34 @@ describe("POST /api/projects", () => {
     expect(body).toEqual({ error: "A project with this slug already exists" })
   })
 
+  it("creates a project with startDate and endDate", async () => {
+    mockAuthenticated()
+    mockDb.membership.findUnique.mockResolvedValue({
+      ...createMembership(),
+      role: createAdminRole(),
+    })
+    mockDb.project.findUnique.mockResolvedValue(null)
+    mockDb.project.create.mockResolvedValue({} as any)
+
+    const request = createNextRequest("http://localhost:3000/api/projects", {
+      method: "POST",
+      body: JSON.stringify({
+        name: "Scheduled", slug: "scheduled", organizationId: "org-1",
+        startDate: "2026-08-01T00:00:00.000Z", endDate: "2026-12-31T00:00:00.000Z",
+      }),
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(201)
+    expect(mockDb.project.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          startDate: expect.any(Date),
+          endDate: expect.any(Date),
+        }),
+      }),
+    )
+  })
+
   it("creates a project successfully", async () => {
     mockAuthenticated()
     mockDb.membership.findUnique.mockResolvedValue({

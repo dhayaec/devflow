@@ -100,6 +100,21 @@ describe("PATCH /api/issues/[issueId]", () => {
     expect(response.status).toBe(404)
   })
 
+  it("returns 403 when not a member", async () => {
+    mockAuthenticated()
+    mockDb.issue.findUnique.mockResolvedValue({
+      id: "issue-1",
+      project: { organizationId: "org-1" },
+    } as any)
+    mockDb.membership.findUnique.mockResolvedValue(null)
+
+    const response = await PATCH(
+      createNextRequest("http://localhost:3000", { method: "PATCH", body: JSON.stringify({ title: "Updated" }) }),
+      makeParams("issue-1"),
+    )
+    expect(response.status).toBe(403)
+  })
+
   it("returns 403 when lacks issue.edit permission", async () => {
     mockAuthenticated()
     mockDb.issue.findUnique.mockResolvedValue({
@@ -116,6 +131,60 @@ describe("PATCH /api/issues/[issueId]", () => {
       makeParams("issue-1"),
     )
     expect(response.status).toBe(403)
+  })
+
+  it("clears dueDate with null", async () => {
+    mockAuthenticated()
+    mockDb.issue.findUnique.mockResolvedValue({
+      id: "issue-1",
+      project: { organizationId: "org-1" },
+    } as any)
+    mockDb.membership.findUnique.mockResolvedValue({
+      ...createMembership(),
+      role: createAdminRole(),
+    })
+    mockDb.issue.update.mockResolvedValue({} as any)
+
+    const response = await PATCH(
+      createNextRequest("http://localhost:3000", {
+        method: "PATCH",
+        body: JSON.stringify({ dueDate: null }),
+      }),
+      makeParams("issue-1"),
+    )
+    expect(response.status).toBe(200)
+    expect(mockDb.issue.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ dueDate: null }),
+      }),
+    )
+  })
+
+  it("updates dueDate field", async () => {
+    mockAuthenticated()
+    mockDb.issue.findUnique.mockResolvedValue({
+      id: "issue-1",
+      project: { organizationId: "org-1" },
+    } as any)
+    mockDb.membership.findUnique.mockResolvedValue({
+      ...createMembership(),
+      role: createAdminRole(),
+    })
+    mockDb.issue.update.mockResolvedValue({} as any)
+
+    const response = await PATCH(
+      createNextRequest("http://localhost:3000", {
+        method: "PATCH",
+        body: JSON.stringify({ dueDate: "2026-09-01T00:00:00.000Z" }),
+      }),
+      makeParams("issue-1"),
+    )
+    expect(response.status).toBe(200)
+    expect(mockDb.issue.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ dueDate: expect.any(Date) }),
+      }),
+    )
   })
 
   it("updates allowed fields", async () => {
@@ -171,6 +240,18 @@ describe("DELETE /api/issues/[issueId]", () => {
 
     const response = await DELETE(createNextRequest("http://localhost:3000", { method: "DELETE" }), makeParams("issue-1"))
     expect(response.status).toBe(404)
+  })
+
+  it("returns 403 when not a member on delete", async () => {
+    mockAuthenticated()
+    mockDb.issue.findUnique.mockResolvedValue({
+      id: "issue-1",
+      project: { organizationId: "org-1" },
+    } as any)
+    mockDb.membership.findUnique.mockResolvedValue(null)
+
+    const response = await DELETE(createNextRequest("http://localhost:3000", { method: "DELETE" }), makeParams("issue-1"))
+    expect(response.status).toBe(403)
   })
 
   it("returns 403 when lacks issue.delete permission", async () => {

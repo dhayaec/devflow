@@ -114,6 +114,22 @@ describe("POST /api/comments", () => {
     expect(response.status).toBe(404)
   })
 
+  it("returns 403 when not a member", async () => {
+    mockAuthenticated()
+    mockDb.issue.findUnique.mockResolvedValue({
+      id: "issue-1",
+      project: { organizationId: "org-1" },
+    } as any)
+    mockDb.membership.findUnique.mockResolvedValue(null)
+
+    const request = createNextRequest("http://localhost:3000/api/comments", {
+      method: "POST",
+      body: JSON.stringify({ body: "Nice", issueId: "issue-1" }),
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(403)
+  })
+
   it("creates a comment successfully", async () => {
     mockAuthenticated()
     mockDb.issue.findUnique.mockResolvedValue({

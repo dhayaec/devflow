@@ -6,6 +6,7 @@ import {
   mockAuthenticated,
   mockUnauthenticated,
   createNextRequest,
+  getResponseJson,
 } from "@/__tests__/helpers"
 
 beforeEach(() => {
@@ -124,6 +125,7 @@ describe("DELETE /api/comments/[commentId]", () => {
 
     const response = await DELETE(createNextRequest("http://localhost:3000", { method: "DELETE" }), makeParams("comment-1"))
     expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({ success: true })
+    const body = await getResponseJson(response)
+    expect(body).toEqual({ success: true })
   })
 })

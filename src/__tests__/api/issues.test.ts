@@ -52,6 +52,24 @@ describe("GET /api/issues", () => {
     expect(response.status).toBe(403)
   })
 
+  it("filters by sprintId", async () => {
+    mockAuthenticated()
+    mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)
+    mockDb.membership.findUnique.mockResolvedValue(createMembership())
+    mockDb.issue.findMany.mockResolvedValue([])
+
+    const request = createNextRequest(
+      "http://localhost:3000/api/issues?projectId=proj-1&sprintId=sprint-1",
+    )
+    const response = await GET(request)
+    expect(response.status).toBe(200)
+    expect(mockDb.issue.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ projectId: "proj-1", sprintId: "sprint-1" }),
+      }),
+    )
+  })
+
   it("returns issues with filters", async () => {
     mockAuthenticated()
     mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)
@@ -153,6 +171,48 @@ describe("POST /api/issues", () => {
     })
     const response = await POST(request)
     expect(response.status).toBe(403)
+  })
+
+  it("creates an issue with dueDate and estimate", async () => {
+    mockAuthenticated()
+    mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)
+    mockDb.membership.findUnique.mockResolvedValue({
+      ...createMembership(),
+      role: createAdminRole(),
+    })
+    mockDb.issue.aggregate.mockResolvedValue({ _max: { sortOrder: null } })
+    const created = {
+      id: "issue-new",
+      title: "Dated issue",
+      dueDate: "2026-08-15T00:00:00.000Z",
+      estimate: 8,
+      reporterId: "user-1",
+      sortOrder: 1000,
+      assignee: null,
+      reporter: { id: "user-1", name: "Test User", image: null },
+      sprint: null,
+      labels: [],
+      _count: { comments: 0, attachments: 0, checklists: 0 },
+    } as any
+    mockDb.issue.create.mockResolvedValue(created)
+
+    const request = createNextRequest("http://localhost:3000/api/issues", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Dated issue", projectId: "proj-1",
+        dueDate: "2026-08-15T00:00:00.000Z", estimate: 8,
+      }),
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(201)
+    expect(mockDb.issue.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          dueDate: expect.any(Date),
+          estimate: 8,
+        }),
+      }),
+    )
   })
 
   it("creates an issue successfully", async () => {

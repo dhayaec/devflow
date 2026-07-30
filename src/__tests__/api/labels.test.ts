@@ -113,6 +113,25 @@ describe("POST /api/labels", () => {
     expect(body).toEqual({ error: "Label with this name already exists" })
   })
 
+  it("uses default color when not provided", async () => {
+    mockAuthenticated()
+    mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)
+    mockDb.label.findUnique.mockResolvedValue(null)
+    mockDb.label.create.mockResolvedValue({} as any)
+
+    const request = createNextRequest("http://localhost:3000/api/labels", {
+      method: "POST",
+      body: JSON.stringify({ name: "urgent", projectId: "proj-1" }),
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(201)
+    expect(mockDb.label.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ color: "#6366f1" }),
+      }),
+    )
+  })
+
   it("creates a label successfully", async () => {
     mockAuthenticated()
     mockDb.project.findUnique.mockResolvedValue({ id: "proj-1", organizationId: "org-1" } as any)

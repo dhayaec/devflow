@@ -88,6 +88,18 @@ describe("DELETE /api/labels/[labelId]", () => {
     expect(response.status).toBe(404)
   })
 
+  it("returns 403 when not a member", async () => {
+    mockAuthenticated()
+    mockDb.label.findUnique.mockResolvedValue({
+      id: "label-1",
+      project: { organizationId: "org-1" },
+    } as any)
+    mockDb.membership.findUnique.mockResolvedValue(null)
+
+    const response = await DELETE(createNextRequest("http://localhost:3000", { method: "DELETE" }), makeParams("label-1"))
+    expect(response.status).toBe(403)
+  })
+
   it("deletes label successfully", async () => {
     mockAuthenticated()
     mockDb.label.findUnique.mockResolvedValue({

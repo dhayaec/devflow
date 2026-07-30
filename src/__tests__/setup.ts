@@ -1,6 +1,10 @@
 import { vi } from "vitest"
 
 const mockDb = {
+  user: {
+    findUnique: vi.fn(),
+    update: vi.fn(),
+  },
   organization: {
     findUnique: vi.fn(),
     findMany: vi.fn(),
@@ -77,6 +81,7 @@ const mockDb = {
     create: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
+    aggregate: vi.fn(),
   },
   role: {
     findUnique: vi.fn(),
@@ -91,6 +96,11 @@ const mockDb = {
   permission: {
     findUnique: vi.fn(),
     findMany: vi.fn(),
+  },
+  channel: {
+    findUnique: vi.fn(),
+    findMany: vi.fn(),
+    create: vi.fn(),
   },
 } as const
 

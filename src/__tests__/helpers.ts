@@ -72,6 +72,7 @@ export function createAdminRole(): MembershipRole["role"] {
       { permission: { action: "sprint.create" } },
       { permission: { action: "sprint.edit" } },
       { permission: { action: "label.create" } },
+      { permission: { action: "channel.create" } },
     ],
   }
 }
