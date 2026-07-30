@@ -34,8 +34,12 @@ export default function CreateOrgPage() {
     })
 
     if (!res.ok) {
-      const data = await res.json()
-      setError(data.error ?? "Something went wrong")
+      try {
+        const data = await res.json()
+        setError(data.error ?? "Something went wrong")
+      } catch {
+        setError(`Request failed (${res.status})`)
+      }
       setLoading(false)
       return
     }
